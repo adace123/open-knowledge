@@ -92,6 +92,8 @@ function AppHeaderBadges({
   );
 }
 
+const WEB_CENTRE_RESERVED_WIDTH_PX = 160;
+
 function centreFloorWidth(centre: HTMLElement): number {
   let width = 0;
   for (const child of centre.children) {
@@ -188,7 +190,13 @@ export function AppHeader({ onOpenSearch }: AppHeaderProps) {
       const leadingSettledWidth = compact
         ? leadingExpandedWidth - badges.labelWidth
         : leadingExpandedWidth;
-      return headerWidth - leadingSettledWidth - (centre != null ? centreFloorWidth(centre) : 0);
+      const centreWidth =
+        centre == null
+          ? 0
+          : centre.querySelector('[data-testid="web-project-name"]') != null
+            ? Math.min(centreNaturalWidth(centre), WEB_CENTRE_RESERVED_WIDTH_PX)
+            : centreFloorWidth(centre);
+      return headerWidth - leadingSettledWidth - centreWidth;
     },
   });
   useLayoutEffect(() => {

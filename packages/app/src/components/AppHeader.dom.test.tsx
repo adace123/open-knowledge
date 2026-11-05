@@ -29,6 +29,11 @@ const shell = vi.hoisted(() => ({
   activeTarget: { kind: 'doc' } as unknown,
   syncStatus: null as Partial<GitSyncStatus> | null,
   syncToastHosts: 0,
+  workspace: null as { contentDir: string; pathSeparator: string } | null,
+}));
+
+vi.mock('@/lib/use-workspace', () => ({
+  useWorkspace: () => shell.workspace,
 }));
 
 vi.mock('@/lib/single-file-mode', () => ({
@@ -166,6 +171,8 @@ interface HeaderMetrics {
   paneButton?: number;
   switcher?: number;
   switcherName?: number;
+  centre?: number;
+  centreLabel?: number;
 }
 
 function mockHeaderMetrics(source: HeaderMetrics | (() => HeaderMetrics)) {
@@ -174,7 +181,11 @@ function mockHeaderMetrics(source: HeaderMetrics | (() => HeaderMetrics)) {
     .spyOn(Element.prototype, 'scrollWidth', 'get')
     .mockImplementation(function (this: Element) {
       const metrics = read();
-      return this.hasAttribute('data-instance-badge-label') ? (metrics.badgeLabel ?? 0) : 0;
+      return this.hasAttribute('data-instance-badge-label')
+        ? (metrics.badgeLabel ?? 0)
+        : this.hasAttribute('data-app-header-center-label')
+          ? (metrics.centreLabel ?? 0)
+          : 0;
     });
   const offsetWidth = vi
     .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
@@ -221,6 +232,9 @@ function mockHeaderMetrics(source: HeaderMetrics | (() => HeaderMetrics)) {
       }
       if (this.getAttribute('data-testid') === 'project-switcher-trigger') {
         return metrics.switcher ?? 0;
+      }
+      if (this.getAttribute('data-testid') === 'web-project-name') {
+        return metrics.centre ?? 0;
       }
       if (this.getAttribute('data-testid') === 'project-switcher-name') {
         return metrics.switcherName ?? 0;
@@ -344,6 +358,7 @@ afterEach(() => {
   shell.syncStatus = null;
   shell.syncToastHosts = 0;
   shell.singleFile = false;
+  shell.workspace = null;
   __resetPaneVisibilityStoreForTests();
   projectTerminal = TERMINAL_SETTING_UNSET;
   vi.unstubAllGlobals();
@@ -779,6 +794,30 @@ describe('AppHeader', () => {
   });
 
   describe('collapse', () => {
+    test('at a phone width, reserved project-name space folds the trailing actions instead of squeezing the name', async () => {
+      shell.workspace = { contentDir: '/projects/mobile-project', pathSeparator: '/' };
+      const restoreMetrics = mockHeaderMetrics({
+        header: 390,
+        leading: 38,
+        trailing: 220,
+        collapsedTrailing: 44,
+        centre: 24,
+        centreLabel: 136,
+      });
+      try {
+        renderHeader();
+
+        expect(await screen.findByTestId('web-project-name')).toBeTruthy();
+        expect(overflowTrigger()).not.toBeNull();
+        const panel = await openOverflowPanel();
+        for (const query of TRAILING_ACTION_QUERIES) {
+          expect(panel.contains(query())).toBe(true);
+        }
+      } finally {
+        restoreMetrics();
+      }
+    });
+
     test('when the trailing group does not fit, its five controls go behind "More actions" and the leading group keeps everything but the BETA and instance badges', async () => {
       setElectronHost(true, {
         platform: 'win32',

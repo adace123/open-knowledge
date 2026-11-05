@@ -372,6 +372,11 @@ function SettingsDialogFrame({
           ] satisfies SidebarSubsection[],
         },
         {
+          id: 'server-auth',
+          label: t`Sign in`,
+          keywords: ['OIDC', 'SSO', 'Pocket ID', 'auth', 'users', 'identity'],
+        },
+        {
           id: 'search',
           label: t`Search`,
           subsections: [
@@ -549,6 +554,13 @@ function SettingsSidebar({
   onNavigate,
 }: SettingsSidebarProps) {
   const { t } = useLingui();
+  const sectionsRef = useRef<HTMLElement | null>(null);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: activeId re-runs the scroll after the selected section changes
+  useEffect(() => {
+    sectionsRef.current
+      ?.querySelector<HTMLElement>('[aria-current="page"]')
+      ?.scrollIntoView?.({ block: 'nearest', inline: 'center' });
+  }, [activeId]);
   const query = searchQuery.trim();
   const results =
     query === ''
@@ -560,8 +572,9 @@ function SettingsSidebar({
 
   return (
     <nav
+      ref={sectionsRef}
       aria-label={t`Settings sections`}
-      className="flex shrink-0 gap-x-3 overflow-x-auto overscroll-contain subtle-scrollbar scroll-fade-mask-x-max-sm border-b bg-muted/30 px-3 py-2 max-sm:pt-10 sm:h-full sm:min-h-0 sm:flex-col sm:gap-0 sm:overflow-x-visible sm:border-r sm:border-b-0 sm:py-4"
+      className="flex shrink-0 flex-col gap-2 overflow-hidden border-b bg-muted/30 px-3 py-2 max-sm:pt-10 sm:h-full sm:min-h-0 sm:gap-0 sm:overflow-visible sm:border-r sm:border-b-0 sm:py-4"
     >
       <Command
         shouldFilter={false}
@@ -623,7 +636,7 @@ function SettingsSidebar({
         ) : null}
       </Command>
 
-      <div className="contents subtle-scrollbar sm:flex sm:min-h-0 sm:flex-1 sm:flex-col sm:overflow-y-auto sm:overscroll-contain">
+      <div className="flex min-w-0 shrink-0 gap-3 overflow-x-auto overscroll-x-contain subtle-scrollbar scroll-fade-mask-x-max-sm sm:min-h-0 sm:flex-1 sm:flex-col sm:gap-0 sm:overflow-x-hidden sm:overflow-y-auto sm:overscroll-y-contain">
         {query === ''
           ? groups.map((group) => (
               <SettingsSidebarGroup
