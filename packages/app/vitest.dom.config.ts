@@ -58,7 +58,11 @@ export const appDomVitestConfig = {
     isolate: true,
     // Route the real Excalidraw through Vite's transform rather than Node's
     // resolver, so the `roughjs/bin/rough` alias above is honoured.
-    server: { deps: { inline: ['vim-prose', /@excalidraw[/\\]excalidraw/] } },
+    server: {
+      deps: {
+        inline: [...(appVitestConfig.test.server?.deps?.inline ?? []), /@excalidraw[/\\]excalidraw/],
+      },
+    },
   },
 } satisfies ViteUserConfig;
 
