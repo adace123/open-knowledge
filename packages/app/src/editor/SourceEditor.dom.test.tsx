@@ -2,6 +2,7 @@ import { EditorSelection } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { HocuspocusProvider } from '@hocuspocus/provider';
 import type { Config } from '@inkeep/open-knowledge-core';
+import { getCM } from '@replit/codemirror-vim';
 import { act, cleanup, fireEvent, render, waitFor, within } from '@testing-library/react';
 import { Activity } from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -99,7 +100,7 @@ const mountedDocNames = new Set<string>();
 let composerOpenRequests = 0;
 let unsubscribeComposer: (() => void) | null = null;
 
-function makeConfigValue(wordWrap: boolean): ConfigContextValue {
+function makeConfigValue(wordWrap: boolean, vimMode = false): ConfigContextValue {
   return {
     userBinding: null,
     userSynced: false,
@@ -112,7 +113,7 @@ function makeConfigValue(wordWrap: boolean): ConfigContextValue {
     projectLocalConfig: null,
     projectSynced: false,
     projectLocalSynced: false,
-    merged: { editor: { wordWrap } } as Config,
+    merged: { editor: { wordWrap, vimMode } } as Config,
   };
 }
 
@@ -141,13 +142,15 @@ function Harness({
   provider,
   ytext,
   wordWrap,
+  vimMode = false,
 }: {
   provider: HocuspocusProvider;
   ytext: Y.Text;
   wordWrap: boolean;
+  vimMode?: boolean;
 }) {
   return (
-    <ConfigContext value={makeConfigValue(wordWrap)}>
+    <ConfigContext value={makeConfigValue(wordWrap, vimMode)}>
       <SourceEditor
         docName={provider.configuration.name ?? 'test-source'}
         ytext={ytext}
@@ -290,6 +293,72 @@ describe('SourceEditor word-wrap preference wiring', () => {
     await waitFor(() => {
       expect(content.classList.contains('cm-lineWrapping')).toBe(false);
     });
+    expect(container.querySelector('.cm-editor')).toBe(cmEditor);
+  });
+
+  test('applies editor.vimMode to the source CodeMirror instance', async () => {
+    const { provider, ytext } = makeProvider('source-vim-on');
+    const { container } = render(
+      <Harness provider={provider} ytext={ytext} wordWrap={true} vimMode={true} />,
+    );
+
+    const content = await findCmContent(container);
+    const view = EditorView.findFromDOM(content);
+    expect(view).toBeTruthy();
+    expect(getCM(view as EditorView)).not.toBeNull();
+    expect(container.querySelector('.cm-vim-panel')).not.toBeNull();
+
+    const scroller = container.querySelector('.cm-scroller');
+    expect(scroller?.classList.contains('cm-vimMode')).toBe(true);
+
+    await act(async () => {
+      fireEvent.keyDown(content, { key: 'i' });
+    });
+    expect(scroller?.classList.contains('cm-vimMode')).toBe(false);
+
+    await act(async () => {
+      fireEvent.keyDown(content, { key: 'Escape' });
+    });
+    expect(scroller?.classList.contains('cm-vimMode')).toBe(true);
+  });
+
+  test('hot-swaps source CodeMirror vim keybindings without remounting', async () => {
+    const { provider, ytext } = makeProvider('source-vim-hot-swap');
+    const { container, rerender } = render(
+      <Harness provider={provider} ytext={ytext} wordWrap={true} vimMode={false} />,
+    );
+
+    const content = await findCmContent(container);
+    const view = EditorView.findFromDOM(content) as EditorView;
+    const cmEditor = container.querySelector('.cm-editor');
+    expect(getCM(view)).toBeNull();
+    expect(container.querySelector('.cm-vim-panel')).toBeNull();
+
+    rerender(<Harness provider={provider} ytext={ytext} wordWrap={true} vimMode={true} />);
+
+    await waitFor(() => {
+      expect(getCM(view)).not.toBeNull();
+    });
+    expect(container.querySelector('.cm-vim-panel')).not.toBeNull();
+    expect(container.querySelector('.cm-editor')).toBe(cmEditor);
+
+    const scroller = container.querySelector('.cm-scroller');
+    expect(scroller?.classList.contains('cm-vimMode')).toBe(true);
+    await act(async () => {
+      fireEvent.keyDown(content, { key: 'i' });
+    });
+    expect(scroller?.classList.contains('cm-vimMode')).toBe(false);
+    await act(async () => {
+      fireEvent.keyDown(content, { key: 'Escape' });
+    });
+    expect(scroller?.classList.contains('cm-vimMode')).toBe(true);
+
+    rerender(<Harness provider={provider} ytext={ytext} wordWrap={true} vimMode={false} />);
+
+    await waitFor(() => {
+      expect(getCM(view)).toBeNull();
+    });
+    expect(container.querySelector('.cm-vim-panel')).toBeNull();
     expect(container.querySelector('.cm-editor')).toBe(cmEditor);
   });
 

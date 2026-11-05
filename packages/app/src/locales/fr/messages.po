@@ -11801,6 +11801,9 @@ msgstr "Utiliser leur version"
 msgid "Use this starter pack"
 msgstr "Utiliser ce pack de démarrage"
 
+msgid "Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands."
+msgstr "Utilisez les raccourcis Vim dans l'éditeur de source Markdown : modes normal, insertion et visuel, avec les commandes :."
+
 msgid "User"
 msgstr "Utilisateur"
 
@@ -11882,6 +11885,9 @@ msgstr "Voir la source"
 
 msgid "View the {plugin} plugin repo"
 msgstr "Voir le dépôt du plugin {plugin}"
+
+msgid "Vim mode"
+msgstr "Mode Vim"
 
 msgid "Visibility"
 msgstr "Visibilité"

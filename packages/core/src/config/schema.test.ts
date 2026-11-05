@@ -239,6 +239,11 @@ describe('editor preferences', () => {
     expect(ConfigSchema.parse({}).editor.previewTabs).toBe(true);
     expect(ConfigSchema.parse({ editor: { previewTabs: false } }).editor.previewTabs).toBe(false);
   });
+
+  test('vim mode defaults off and preserves an explicit opt-in', () => {
+    expect(ConfigSchema.parse({}).editor.vimMode).toBe(false);
+    expect(ConfigSchema.parse({ editor: { vimMode: true } }).editor.vimMode).toBe(true);
+  });
 });
 
 describe('linkPreviews.enabled (external link-hover preview egress default)', () => {

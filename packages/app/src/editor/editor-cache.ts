@@ -87,6 +87,7 @@ export interface CmCacheEntry {
   wordWrapCompartment: Compartment;
   placeholderCompartment: Compartment;
   lintCompartment: Compartment;
+  vimCompartment?: Compartment;
   undoManager?: Y.UndoManager;
   scrollTop: number;
   hadFocus: boolean;
@@ -114,6 +115,7 @@ interface CmFactoryResult {
   wordWrapCompartment: Compartment;
   placeholderCompartment: Compartment;
   lintCompartment: Compartment;
+  vimCompartment?: Compartment;
 }
 
 type CmFactory = (container: HTMLElement) => CmFactoryResult;
@@ -508,6 +510,7 @@ export function mountCmEditor(params: MountCmParams): CmCacheEntry {
       wordWrapCompartment: fresh.wordWrapCompartment,
       placeholderCompartment: fresh.placeholderCompartment,
       lintCompartment: fresh.lintCompartment,
+      vimCompartment: fresh.vimCompartment,
       scrollTop: 0,
       hadFocus: false,
       activeMountKey: docName,
@@ -572,6 +575,7 @@ export function mountCmEditor(params: MountCmParams): CmCacheEntry {
     wordWrapCompartment: fresh.wordWrapCompartment,
     placeholderCompartment: fresh.placeholderCompartment,
     lintCompartment: fresh.lintCompartment,
+    vimCompartment: fresh.vimCompartment,
     scrollTop: 0,
     hadFocus: false,
     activeMountKey: docName,

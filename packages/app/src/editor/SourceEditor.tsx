@@ -9,6 +9,7 @@ import {
   toEffectiveBase,
 } from '@inkeep/open-knowledge-core/markdown/lint';
 import { useLingui } from '@lingui/react/macro';
+import { vim } from '@replit/codemirror-vim';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next';
@@ -68,6 +69,10 @@ import {
 import { attachTypingBurstDetector } from './typing-burst-detector';
 
 const noScrollEffect = StateEffect.define<null>();
+
+function sourceVimExtension(enabled: boolean) {
+  return enabled ? vim({ status: true }) : [];
+}
 
 interface SourceEditorProps {
   docName: string;
@@ -173,6 +178,7 @@ export function SourceEditor({
   const { merged } = useConfigContext();
   const sourceModeActiveRef = useRef(isSourceModeActive);
   const wordWrap = merged?.editor?.wordWrap ?? true;
+  const vimMode = merged?.editor?.vimMode ?? false;
   const { data: lintConfigData } = useDocLintConfig(docName);
   const linterConfig =
     lintConfigData?.effective ??
@@ -182,7 +188,7 @@ export function SourceEditor({
   const linterConfigKey = JSON.stringify(linterConfig);
 
   const cmEntryRef = useRef<CmCacheEntry | null>(null);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: ytext and provider are the remount keys; docName is fixed for the lifetime of a mounted SourceEditor, and theme, wrap, placeholder, content label and lint config reconfigure the live view through compartments
+  // biome-ignore lint/correctness/useExhaustiveDependencies: ytext and provider are the remount keys; docName is fixed for the lifetime of a mounted SourceEditor, and theme, wrap, vim, placeholder, content label and lint config reconfigure the live view through compartments
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -212,9 +218,11 @@ export function SourceEditor({
             const wordWrapCompartment = new Compartment();
             const placeholderCompartment = new Compartment();
             const lintCompartment = new Compartment();
+            const vimCompartment = new Compartment();
             const state = EditorState.create({
               doc: ytext.toString(),
               extensions: [
+                vimCompartment.of(sourceVimExtension(vimMode)),
                 codeMirrorContentAttributes(contentLabel),
                 sourceModeSetup,
                 sourceLineDirection,
@@ -294,6 +302,7 @@ export function SourceEditor({
               wordWrapCompartment,
               placeholderCompartment,
               lintCompartment,
+              vimCompartment,
             };
           } catch (err) {
             undoManager.destroy();
@@ -367,6 +376,14 @@ export function SourceEditor({
       ),
     });
   }, [resolvedTheme]);
+
+  useEffect(() => {
+    const entry = cmEntryRef.current;
+    if (!entry?.vimCompartment) return;
+    entry.view.dispatch({
+      effects: entry.vimCompartment.reconfigure(sourceVimExtension(vimMode)),
+    });
+  }, [vimMode]);
 
   useEffect(() => {
     const entry = cmEntryRef.current;

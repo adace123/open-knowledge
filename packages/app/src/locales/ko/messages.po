@@ -11801,6 +11801,9 @@ msgstr "상대 버전 사용"
 msgid "Use this starter pack"
 msgstr "이 스타터 팩 사용"
 
+msgid "Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands."
+msgstr "Markdown 소스 편집기에서 Vim 키 바인딩을 사용합니다. 일반, 삽입, 비주얼 모드와 : 명령을 지원합니다."
+
 msgid "User"
 msgstr "사용자"
 
@@ -11882,6 +11885,9 @@ msgstr "소스 보기"
 
 msgid "View the {plugin} plugin repo"
 msgstr "{plugin} 플러그인 저장소 보기"
+
+msgid "Vim mode"
+msgstr "Vim 모드"
 
 msgid "Visibility"
 msgstr "공개 범위"

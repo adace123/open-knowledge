@@ -32,6 +32,11 @@ export const FIELDS_USER_PREFERENCES: FieldDef[] = [
     description: msg`Reuse one tab when clicking through the sidebars. Off opens every click in its own tab.`,
   },
   {
+    path: ['editor', 'vimMode'],
+    label: msg`Vim mode`,
+    description: msg`Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands.`,
+  },
+  {
     path: ['appearance', 'preview', 'autoOpen'],
     label: msg`Open preview when agent edits`,
     description: msg`When enabled, the agent opens or refreshes the preview after each edit. Disable if you manage your own preview window (OK Desktop, a browser tab on another display, etc.).`,

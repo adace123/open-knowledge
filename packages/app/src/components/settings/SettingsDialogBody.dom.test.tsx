@@ -174,6 +174,18 @@ describe('SettingsDialogBody preferences runtime', () => {
       'true',
     );
 
+    expect(screen.getByText('Vim mode')).toBeDefined();
+    expect(
+      screen.getByText(
+        'Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands.',
+      ),
+    ).toBeDefined();
+    const vimModeField = container.querySelector('[data-field="editor.vimMode"]');
+    expect(vimModeField).toBeTruthy();
+    expect(vimModeField?.querySelector('[role="switch"]')?.getAttribute('aria-checked')).toBe(
+      'false',
+    );
+
     expect(screen.getByText('Open preview when agent edits')).toBeDefined();
     expect(
       screen.getByText(
@@ -312,6 +324,21 @@ describe('SettingsDialogBody preferences runtime', () => {
       expect(patches).toEqual([{ editor: { previewTabs: false } }]);
     });
     expect(previewTabsSwitch.getAttribute('aria-checked')).toBe('false');
+  });
+
+  test('commits editor.vimMode changes through binding.patch', async () => {
+    const user = userEvent.setup();
+    const { binding, patches } = makeBinding();
+    await renderPreferences(binding);
+
+    const vimModeSwitch = screen.getByRole('switch', { name: 'Vim mode' });
+    expect(vimModeSwitch.getAttribute('aria-checked')).toBe('false');
+    await user.click(vimModeSwitch);
+
+    await waitFor(() => {
+      expect(patches).toEqual([{ editor: { vimMode: true } }]);
+    });
+    expect(vimModeSwitch.getAttribute('aria-checked')).toBe('true');
   });
 
   test('commits appearance.preview.autoOpen changes through binding.patch', async () => {

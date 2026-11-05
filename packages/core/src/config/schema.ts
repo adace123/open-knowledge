@@ -607,8 +607,19 @@ export const ConfigSchema = z.looseObject({
             'Reuse one tab when clicking through the Files and Skills sidebars, the way an editor preview tab works. Turn off to open every click in its own tab. Pinned tabs keep their own tab either way. A personal preference (user scope).',
         })
         .default(true),
+      vimMode: z
+        .boolean()
+        .register(fieldRegistry, {
+          scope: 'user',
+          agentSettable: false,
+          reload: 'live',
+          defaultScope: 'user',
+          description:
+            'Vim keybindings in the source (CodeMirror) editor: normal, insert, and visual modes on the raw markdown. A personal preference (user scope).',
+        })
+        .default(false),
     })
-    .default({ wordWrap: true, previewTabs: true }),
+    .default({ wordWrap: true, previewTabs: true, vimMode: false }),
   agents: z
     .looseObject({
       autoApproveOkTools: z

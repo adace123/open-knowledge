@@ -76,6 +76,7 @@ describe('bindConfigDoc — current()', () => {
     expect(config.appearance).toBeDefined();
     expect(config.editor?.wordWrap).toBe(true);
     expect(config.editor?.previewTabs).toBe(true);
+    expect(config.editor?.vimMode).toBe(false);
     binding.dispose();
   });
 

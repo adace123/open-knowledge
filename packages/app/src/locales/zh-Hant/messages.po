@@ -11801,6 +11801,9 @@ msgstr "使用對方的版本"
 msgid "Use this starter pack"
 msgstr "使用此入門套件"
 
+msgid "Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands."
+msgstr "在 Markdown 原始碼編輯器中使用 Vim 快速鍵：普通、插入和視覺模式，支援 : 指令。"
+
 msgid "User"
 msgstr "使用者"
 
@@ -11882,6 +11885,9 @@ msgstr "檢視來源"
 
 msgid "View the {plugin} plugin repo"
 msgstr "檢視 {plugin} 外掛的程式碼儲存庫"
+
+msgid "Vim mode"
+msgstr "Vim 模式"
 
 msgid "Visibility"
 msgstr "可見度"

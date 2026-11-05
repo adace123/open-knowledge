@@ -79,6 +79,16 @@ const FIXTURES: Fixture[] = [
     shouldAccept: false,
   },
   {
+    name: 'editor.vimMode=true accepted',
+    input: { editor: { vimMode: true } },
+    shouldAccept: true,
+  },
+  {
+    name: 'editor.vimMode string rejected',
+    input: { editor: { vimMode: 'true' } },
+    shouldAccept: false,
+  },
+  {
     name: 'appearance.preview.autoOpen=false accepted',
     input: { appearance: { preview: { autoOpen: false } } },
     shouldAccept: true,
