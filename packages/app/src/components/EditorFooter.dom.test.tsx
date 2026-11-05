@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { afterAll, afterEach, describe, expect, test, vi } from 'vitest';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { publishWysiwygVimMode } from '@/editor/wysiwyg-vim';
 import type { DocumentStats } from '@/lib/document-stats';
 
 vi.doMock('@lingui/react/macro', () => ({
@@ -53,6 +54,15 @@ async function renderFooter(composerBadge?: { onReopen: () => void } | null) {
   );
 }
 
+async function renderFooterForDoc(docName: string) {
+  const { EditorFooter } = await import('./EditorFooter');
+  return render(
+    <TooltipProvider>
+      <EditorFooter stats={STATS} docName={docName} />
+    </TooltipProvider>,
+  );
+}
+
 async function renderFooterWithFileList(fileList: 'open' | 'closed') {
   const { EditorFooter } = await import('./EditorFooter');
   return render(
@@ -98,6 +108,19 @@ describe('EditorFooter identity row', () => {
 
     const branch = await screen.findByTestId('editor-footer-branch');
     expect(branch.textContent).toBe(SERVER_BRANCH);
+  });
+});
+
+describe('EditorFooter vim mode', () => {
+  afterEach(() => {
+    publishWysiwygVimMode('vim-doc', null);
+  });
+
+  test('shows the visual editor mode for the active document', async () => {
+    publishWysiwygVimMode('vim-doc', 'insert');
+    await renderFooterForDoc('vim-doc');
+
+    expect(screen.getByTestId('editor-footer-vim-mode').textContent).toBe('--INSERT--');
   });
 });
 

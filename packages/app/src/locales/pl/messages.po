@@ -11801,8 +11801,8 @@ msgstr "Użyj ich wersji"
 msgid "Use this starter pack"
 msgstr "Użyj tego pakietu startowego"
 
-msgid "Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands."
-msgstr "Używaj skrótów Vim w edytorze źródła Markdown: tryb normalny, wstawiania i wizualny, z poleceniami :."
+msgid "Use Vim keybindings in the document editor: the Markdown source pane and the visual editor."
+msgstr "Używaj skrótów Vim w edytorze dokumentów: panel źródła Markdown i edytor wizualny."
 
 msgid "User"
 msgstr "Użytkownik"

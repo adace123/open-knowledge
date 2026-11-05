@@ -11797,8 +11797,8 @@ msgstr "Pakai versi mereka"
 msgid "Use this starter pack"
 msgstr "Pakai paket awal ini"
 
-msgid "Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands."
-msgstr "Gunakan pintasan Vim di editor sumber Markdown: mode normal, sisip, dan visual, dengan perintah :."
+msgid "Use Vim keybindings in the document editor: the Markdown source pane and the visual editor."
+msgstr "Gunakan pintasan Vim di editor dokumen: panel sumber Markdown dan editor visual."
 
 msgid "User"
 msgstr "Pengguna"

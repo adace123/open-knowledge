@@ -615,7 +615,7 @@ export const ConfigSchema = z.looseObject({
           reload: 'live',
           defaultScope: 'user',
           description:
-            'Vim keybindings in the source (CodeMirror) editor: normal, insert, and visual modes on the raw markdown. A personal preference (user scope).',
+            'Vim keybindings in the document editor: the Markdown source pane and the visual editor. A personal preference (user scope).',
         })
         .default(false),
     })

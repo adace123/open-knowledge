@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useCurrentBranch } from '@/hooks/use-current-branch';
 import { useWorktrees } from '@/hooks/use-worktrees';
+import { useWysiwygVimMode } from '@/hooks/use-wysiwyg-vim-mode';
 import type { DocumentStats } from '@/lib/document-stats';
 import { checkoutIdentity } from './checkout-identity';
 
@@ -12,6 +13,7 @@ interface EditorFooterProps {
   selectionStats?: DocumentStats | null;
   showStats?: boolean;
   composerBadge?: { onReopen: () => void } | null;
+  docName?: string | null;
 }
 
 export function EditorFooter({
@@ -19,6 +21,7 @@ export function EditorFooter({
   selectionStats,
   showStats = true,
   composerBadge,
+  docName = null,
 }: EditorFooterProps) {
   const { t } = useLingui();
   const branch = useCurrentBranch();
@@ -29,8 +32,10 @@ export function EditorFooter({
     branch,
     worktreeModel,
   });
+  const vimMode = useWysiwygVimMode(docName);
   const projectPath = desktopConfig?.projectPath ?? null;
-  if (!showStats && checkoutDetail === null && composerBadge == null) return null;
+  if (!showStats && checkoutDetail === null && composerBadge == null && vimMode === null)
+    return null;
   const active = selectionStats ?? stats;
   const isSelection = selectionStats != null;
   const { words, chars, tokens } = active;
@@ -63,6 +68,15 @@ export function EditorFooter({
         </Button>
       ) : null}
       <span className="flex min-w-0 items-center gap-3">
+        {vimMode !== null ? (
+          <span
+            data-testid="editor-footer-vim-mode"
+            aria-live="polite"
+            className="font-mono tracking-wide"
+          >
+            --{vimMode.toUpperCase()}--
+          </span>
+        ) : null}
         {checkoutDetail !== null ? (
           <CheckoutDetail detail={checkoutDetail} projectPath={projectPath} />
         ) : null}

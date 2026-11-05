@@ -53,6 +53,11 @@ export const appVitestConfig = {
   },
   test: {
     ...okVitestBase.test,
+    server: {
+      deps: {
+        inline: ['vim-prose'],
+      },
+    },
     env: {
       ...okVitestBase.test.env,
       PLAYWRIGHT_BROWSERS_PATH:

@@ -1618,6 +1618,7 @@ function EditorAreaInner({
           stats={stats}
           selectionStats={selectionStats}
           showStats={showStats}
+          docName={activeDocName}
           composerBadge={
             showBottomComposer && composerDismissed
               ? { onReopen: () => setComposerDismissed(false) }

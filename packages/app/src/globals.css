@@ -7077,3 +7077,67 @@ html:not([data-color-theme]):not(.dark) [data-slot="kbd"] {
   background: var(--popover);
   box-shadow: var(--shadow-md, 0 2px 8px oklch(0% 0 0 / 0.15));
 }
+
+.ProseMirror.vim-mode-normal,
+.ProseMirror.vim-mode-visual,
+.ProseMirror.vim-mode-visual-line {
+  caret-color: transparent;
+}
+
+.ProseMirror.vim-mode-insert,
+.ProseMirror.vim-mode-replace {
+  caret-color: auto;
+}
+
+.vim-block-cursor {
+  background: var(--foreground);
+  color: var(--background);
+  border-radius: 1px;
+}
+
+.vim-block-cursor-eol {
+  background: var(--foreground);
+  border-radius: 1px;
+}
+
+.vim-visual-selection,
+.vim-visual-selection-line {
+  background: color-mix(in oklch, var(--accent) 55%, transparent);
+}
+
+.ProseMirror.vim-mode-visual ::selection,
+.ProseMirror.vim-mode-visual-line ::selection {
+  background: transparent;
+}
+
+.vim-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 1.75rem;
+  padding: 0.25rem 0.5rem;
+  border-top: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+.vim-search-cursor {
+  animation: vim-cursor-blink 1s step-end infinite;
+}
+
+.vim-search-match {
+  background: color-mix(in oklch, var(--accent) 55%, transparent);
+  border-radius: 1px;
+}
+
+.vim-search-match-current {
+  background: color-mix(in oklch, var(--primary) 35%, transparent);
+}
+
+@keyframes vim-cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}

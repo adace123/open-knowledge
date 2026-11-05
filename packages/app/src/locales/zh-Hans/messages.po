@@ -11801,8 +11801,8 @@ msgstr "使用对方的版本"
 msgid "Use this starter pack"
 msgstr "使用此入门包"
 
-msgid "Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands."
-msgstr "在 Markdown 源码编辑器中使用 Vim 快捷键：普通、插入和可视模式，支持 : 命令。"
+msgid "Use Vim keybindings in the document editor: the Markdown source pane and the visual editor."
+msgstr "在文档编辑器中使用 Vim 快捷键：Markdown 源码面板和可视编辑器。"
 
 msgid "User"
 msgstr "用户"

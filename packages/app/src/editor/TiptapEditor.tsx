@@ -18,6 +18,7 @@ import { initProseMirrorDoc, yCursorPlugin, ySyncPluginKey } from '@tiptap/y-tip
 import { type FC, use, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SelectionAnnouncer } from '@/components/editor/SelectionAnnouncer';
+import { useConfigContext } from '@/lib/config-context';
 import { useEditorPaneOnScreen } from '@/lib/use-editor-pane-on-screen';
 import {
   clearRenameSnapshot,
@@ -108,6 +109,7 @@ import { attachTypingBurstDetector } from './typing-burst-detector';
 import { editorVisibleBand } from './utils/editor-visible-region';
 import { getEditorView } from './utils/get-editor-view';
 import { walkCurrencyExtension } from './walk-currency-extension';
+import { installWysiwygVim } from './wysiwyg-vim';
 
 function renderCursor(user: Record<string, string>): HTMLElement {
   const cursor = document.createElement('span');
@@ -551,6 +553,8 @@ const TiptapEditorChrome: FC<TiptapEditorChromeProps> = ({
   portalTarget,
 }) => {
   const editorPaneOnScreen = useEditorPaneOnScreen();
+  const { merged } = useConfigContext();
+  const vimModeEnabled = merged?.editor?.vimMode ?? false;
   const portalSlotRef = useRef<HTMLDivElement | null>(null);
   const singleFile = useSingleFileMode();
   const [editorContentRevision, setEditorContentRevision] = useState(0);
@@ -584,6 +588,13 @@ const TiptapEditorChrome: FC<TiptapEditorChromeProps> = ({
     registerEditor(docName, editor);
     return () => unregisterEditor(docName, editor);
   }, [editor, provider]);
+
+  useEffect(() => {
+    if (!vimModeEnabled || isSourceMode) return;
+    const docName = provider.configuration.name;
+    if (!docName) return;
+    return installWysiwygVim(editor, docName);
+  }, [editor, provider, vimModeEnabled, isSourceMode]);
 
   useEffect(() => {
     if (isSourceMode) return;

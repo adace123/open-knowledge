@@ -34,7 +34,7 @@ export const FIELDS_USER_PREFERENCES: FieldDef[] = [
   {
     path: ['editor', 'vimMode'],
     label: msg`Vim mode`,
-    description: msg`Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands.`,
+    description: msg`Use Vim keybindings in the document editor: the Markdown source pane and the visual editor.`,
   },
   {
     path: ['appearance', 'preview', 'autoOpen'],

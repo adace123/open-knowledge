@@ -177,7 +177,7 @@ describe('SettingsDialogBody preferences runtime', () => {
     expect(screen.getByText('Vim mode')).toBeDefined();
     expect(
       screen.getByText(
-        'Use Vim keybindings in the markdown source editor: normal, insert, and visual modes, with : commands.',
+        'Use Vim keybindings in the document editor: the Markdown source pane and the visual editor.',
       ),
     ).toBeDefined();
     const vimModeField = container.querySelector('[data-field="editor.vimMode"]');
